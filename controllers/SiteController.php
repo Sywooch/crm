@@ -3,39 +3,12 @@
 namespace app\controllers;
 
 use Yii;
-use yii\filters\AccessControl;
 use yii\web\Controller;
-use yii\filters\VerbFilter;
 use app\models\LoginForm;
-use app\models\ContactForm;
+use app\models\User;
 
 class SiteController extends Controller
 {
-    /**
-     * @inheritdoc
-     */
-    public function behaviors()
-    {
-        return [
-            'access' => [
-                'class' => AccessControl::className(),
-                'only' => ['logout'],
-                'rules' => [
-                    [
-                        'actions' => ['logout'],
-                        'allow' => true,
-                        'roles' => ['@'],
-                    ],
-                ],
-            ],
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'logout' => ['post'],
-                ],
-            ],
-        ];
-    }
 
     /**
      * @inheritdoc
@@ -70,16 +43,64 @@ class SiteController extends Controller
      */
     public function actionLogin()
     {
+        $this->layout = 'login';
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
         }
 
-        $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
+        $model = new LoginForm(['scenario' => LoginForm::SCENARIO_LOGIN]);
+
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            if ($model->login()) {
+                return $this->goBack();
+            } else {
+                Yii::$app->session->setFlash('error', 'Не правильно указан E-mail или пароль');
+            }
         }
+
         return $this->render('login', [
-            'model' => $model,
+                    'model' => $model,
+        ]);
+    }
+
+    public function actionRequestToken()
+    {
+        $this->layout = 'login';
+        $model = new LoginForm(['scenario' => LoginForm::SCENARIO_REQUEST_TOKEN]);
+
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            if ($model->requestToken()) {
+                Yii::$app->session->setFlash('success', 'На Ваш адрес отправлено письмо с дальнейшими инструкциями');
+                return $this->goHome();
+            } else {
+                Yii::$app->session->setFlash('error', 'E-mail не найден или не удалось отправить письмо');
+            }
+        }
+
+        return $this->render('requestToken', [
+                    'model' => $model,
+        ]);
+    }
+
+    public function actionResetPassword($token)
+    {
+        $this->layout = 'login';
+
+        $user = User::findIdentityByAccessToken($token);
+
+        if (!$user) {
+            Yii::$app->session->setFlash('error', 'Invalid Token');
+            return $this->goHome();
+        }
+
+        $user->scenario = User::SCENARIO_RESET_PASSWORD;
+        if ($user->load(Yii::$app->request->post()) && $user->validate() && $user->resetPassword()) {
+            Yii::$app->session->setFlash('success', 'Пароль успешно изменен');
+            return $this->goHome();
+        }
+
+        return $this->render('resetPassword', [
+                    'model' => $user,
         ]);
     }
 
@@ -95,31 +116,4 @@ class SiteController extends Controller
         return $this->goHome();
     }
 
-    /**
-     * Displays contact page.
-     *
-     * @return string
-     */
-    public function actionContact()
-    {
-        $model = new ContactForm();
-        if ($model->load(Yii::$app->request->post()) && $model->contact(Yii::$app->params['adminEmail'])) {
-            Yii::$app->session->setFlash('contactFormSubmitted');
-
-            return $this->refresh();
-        }
-        return $this->render('contact', [
-            'model' => $model,
-        ]);
-    }
-
-    /**
-     * Displays about page.
-     *
-     * @return string
-     */
-    public function actionAbout()
-    {
-        return $this->render('about');
-    }
 }
