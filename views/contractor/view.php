@@ -14,13 +14,13 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <p class="menu">
         <?=
-        html::a('Взаимоотношения <i class="fa fa-thumbs-o-up" aria-hidden="true"></i> ', ['contractor/' . $model->id . '/relationships'], [
+        html::a('Взаимоотношения <i class="fa fa-thumbs-o-up" aria-hidden="true"></i> ', ['relationship/index', 'relation' => 'contractor', 'relation_id' => $model->contractor_id], [
             'class' => 'btn btn-default btn-sm'
         ])
         ?>
 
         <?=
-        html::a('Документы <i class="fa fa-file" aria-hidden="true"></i> ', ['/document', 'contractor' => $model->id], [
+        html::a('Документы <i class="fa fa-file" aria-hidden="true"></i> ', ['document/index', 'relation' => 'contractor', 'relation_id' => $model->contractor_id], [
             'class' => 'btn btn-default btn-sm'
         ])
         ?>
@@ -41,7 +41,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             </div>
 
                             <div class="form-group">    
-                                <?= Html::activeLabel($model, 'id_opf', Yii::$app->params['html']['control-label']); ?>
+                                <?= Html::activeLabel($model, 'opf_id', Yii::$app->params['html']['control-label']); ?>
                                 <?= Html::tag('p', $model->opf->name, Yii::$app->params['html']['form-control-static']) ?>
                             </div>
 
@@ -193,9 +193,9 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
 
     <p class="text-right">
-        <?= Html::a('Изменить', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Изменить', ['update', 'id' => $model->contractor_id], ['class' => 'btn btn-primary']) ?>
         <?=
-        Html::a('Удалить', ['delete', 'id' => $model->id], [
+        Html::a('Удалить', ['delete', 'id' => $model->contractor_id], [
             'class' => 'btn btn-danger',
             'data' => [
                 'confirm' => 'Удалить данные контрагента?',

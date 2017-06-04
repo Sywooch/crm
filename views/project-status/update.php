@@ -5,10 +5,9 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\models\ProjectStatus */
 
-$this->title = 'Update Project Status: ' . $model->name;
-$this->params['breadcrumbs'][] = ['label' => 'Project Statuses', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->title = $model->name;
+$this->params['breadcrumbs'][] = ['label' => 'Статусы проектов', 'url' => ['index']];
+$this->params['breadcrumbs'][] = $model->name;
 ?>
 <div class="project-status-update">
 

@@ -8,6 +8,7 @@ use app\models\DocumentTypeSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
 
 /**
  * DocumentTypeController implements the CRUD actions for DocumentType model.
@@ -24,6 +25,15 @@ class DocumentTypeController extends Controller
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['POST'],
+                ],
+            ],
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['administrator'],
+                    ],
                 ],
             ],
         ];
@@ -45,20 +55,8 @@ class DocumentTypeController extends Controller
     }
 
     /**
-     * Displays a single DocumentType model.
-     * @param integer $id
-     * @return mixed
-     */
-    public function actionView($id)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
-    }
-
-    /**
      * Creates a new DocumentType model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
+     * If creation is successful, the browser will be redirected to the 'update' page.
      * @return mixed
      */
     public function actionCreate()
@@ -66,7 +64,7 @@ class DocumentTypeController extends Controller
         $model = new DocumentType();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['update', 'id' => $model->document_type_id]);
         } else {
             return $this->render('create', [
                 'model' => $model,
@@ -76,7 +74,7 @@ class DocumentTypeController extends Controller
 
     /**
      * Updates an existing DocumentType model.
-     * If update is successful, the browser will be redirected to the 'view' page.
+     * If update is successful, the browser will be redirected to the 'update' page.
      * @param integer $id
      * @return mixed
      */
@@ -85,7 +83,7 @@ class DocumentTypeController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['update', 'id' => $model->document_type_id]);
         } else {
             return $this->render('update', [
                 'model' => $model,

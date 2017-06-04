@@ -18,7 +18,7 @@ class LoginForm extends Model
     public function scenarios()
     {
         return [
-            self::SCENARIO_LOGIN => ['email', 'password'],
+            self::SCENARIO_LOGIN => ['email', 'password', 'remember_me'],
             self::SCENARIO_REQUEST_TOKEN => ['email', 'captcha'],
         ];
     }
@@ -36,6 +36,7 @@ class LoginForm extends Model
     {
         return [
             ['email', 'email'],
+            ['remember_me', 'boolean', 'on' => self::SCENARIO_LOGIN],
             [['email', 'password'], 'required', 'on' => self::SCENARIO_LOGIN],
             ['email', 'required', 'on' => self::SCENARIO_REQUEST_TOKEN],
         ];

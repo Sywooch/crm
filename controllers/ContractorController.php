@@ -8,6 +8,7 @@ use app\models\ContractorSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
 
 /**
  * ContractorController implements the CRUD actions for Contractor model.
@@ -24,6 +25,15 @@ class ContractorController extends Controller
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['POST'],
+                ],
+            ],
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['manager'],
+                    ],
                 ],
             ],
         ];
@@ -66,7 +76,7 @@ class ContractorController extends Controller
         $model = new Contractor();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['view', 'id' => $model->contractor_id]);
         } else {
             return $this->render('create', [
                 'model' => $model,
@@ -85,7 +95,7 @@ class ContractorController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['view', 'id' => $model->contractor_id]);
         } else {
             return $this->render('update', [
                 'model' => $model,

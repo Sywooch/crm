@@ -8,6 +8,7 @@ use app\models\UserSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
 
 /**
  * UserController implements the CRUD actions for User model.
@@ -27,6 +28,15 @@ class UserController extends Controller
                     'delete' => ['POST'],
                 ],
             ],
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['administrator'],
+                    ],
+                ],
+            ],
         ];
     }
 
@@ -42,18 +52,6 @@ class UserController extends Controller
         return $this->render('index', [
                     'searchModel' => $searchModel,
                     'dataProvider' => $dataProvider,
-        ]);
-    }
-
-    /**
-     * Displays a single User model.
-     * @param integer $id
-     * @return mixed
-     */
-    public function actionView($id)
-    {
-        return $this->render('view', [
-                    'model' => $this->findModel($id),
         ]);
     }
 
@@ -78,7 +76,7 @@ class UserController extends Controller
                     ->setTextBody($content)
                     ->send();
             Yii::$app->session->setFlash('success', 'Пользователь успешно добавлен');
-            return $this->redirect(['view', 'id' => $user->id]);
+            return $this->redirect(['update', 'id' => $user->user_id]);
         } else {
             return $this->render('create', [
                         'model' => $user,
@@ -97,7 +95,7 @@ class UserController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['update', 'id' => $model->user_id]);
         } else {
             return $this->render('update', [
                         'model' => $model,

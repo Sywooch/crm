@@ -10,8 +10,16 @@ $this->params['breadcrumbs'][] = ['label' => 'Проекты', 'url' => ['index'
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="project-view">
+
+    <p class="menu">
+        <?=
+        html::a('Документы <i class="fa fa-file" aria-hidden="true"></i> ', ['document/index', 'relation' => 'project', 'relation_id' => $model->project_id], [
+            'class' => 'btn btn-default btn-sm'
+        ])
+        ?>
+    </p>
     <div class="row">
-        <div class="col-xs-6">
+        <div class="col-xs-7">
             <div class="panel panel-default">
                 <div class="panel-heading">
                     Основные данные
@@ -31,7 +39,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         <div class="form-group">
                             <?= Html::activeLabel($model, 'site', Yii::$app->params['html']['control-label']); ?>
                             <?= Html::tag('p', Html::a($model->site, $model->site, ['target' => '_blank']), Yii::$app->params['html']['form-control-static']) ?>
-
                         </div>
 
                         <div class="form-group">
@@ -42,7 +49,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 </div>
             </div>
         </div>
-        <div class="col-xs-6">
+        <div class="col-xs-5">
             <div class="panel panel-default">
                 <div class="panel-heading">
                     Параметры
@@ -51,12 +58,12 @@ $this->params['breadcrumbs'][] = $this->title;
                     <div class="form-horizontal">
 
                         <div class="form-group">
-                            <?= Html::activeLabel($model, 'id_user', Yii::$app->params['html']['control-label']); ?>
+                            <?= Html::activeLabel($model, 'user_id', Yii::$app->params['html']['control-label']); ?>
                             <?= Html::tag('p', $model->user->getFullname(), Yii::$app->params['html']['form-control-static']) ?>
                         </div>
 
                         <div class="form-group">
-                            <?= Html::activeLabel($model, 'id_status', Yii::$app->params['html']['control-label']); ?>
+                            <?= Html::activeLabel($model, 'project_status_id', Yii::$app->params['html']['control-label']); ?>
                             <?= Html::tag('p', $model->status->name, Yii::$app->params['html']['form-control-static']) ?>
                         </div>
                     </div>
@@ -66,9 +73,9 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
 
     <p class="text-right">
-        <?= Html::a('Изменить', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Изменить', ['update', 'id' => $model->project_id], ['class' => 'btn btn-primary']) ?>
         <?=
-        Html::a('Удалить', ['delete', 'id' => $model->id], [
+        Html::a('Удалить', ['delete', 'id' => $model->project_id], [
             'class' => 'btn btn-danger',
             'data' => [
                 'confirm' => 'Are you sure you want to delete this item?',

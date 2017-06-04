@@ -18,7 +18,7 @@ class ContractorSearch extends Contractor
     public function rules()
     {
         return [
-            [['id', 'id_opf', 'legal_postcode', 'mailing_postcode'], 'integer'],
+            [['contractor_id', 'opf_id', 'legal_postcode', 'mailing_postcode'], 'integer'],
             [['name', 'email', 'phone', 'fax', 'legal_country', 'legal_region', 'legal_city', 'legal_street', 'legal_house', 'mailing_country', 'mailing_region', 'mailing_city', 'mailing_street', 'mailing_house', 'bank', 'bik', 'rs', 'ks', 'ogrn', 'kpp', 'inn'], 'safe'],
         ];
     }
@@ -59,8 +59,8 @@ class ContractorSearch extends Contractor
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
-            'id_opf' => $this->id_opf,
+            'contractor_id' => $this->contractor_id,
+            'opf_id' => $this->opf_id,
             'legal_postcode' => $this->legal_postcode,
             'mailing_postcode' => $this->mailing_postcode,
         ]);

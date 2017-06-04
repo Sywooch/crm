@@ -18,7 +18,7 @@ class OpfSearch extends Opf
     public function rules()
     {
         return [
-            [['id'], 'integer'],
+            [['opf_id'], 'integer'],
             [['short', 'name'], 'safe'],
         ];
     }
@@ -59,7 +59,7 @@ class OpfSearch extends Opf
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
+            'opf_id' => $this->opf_id,
         ]);
 
         $query->andFilterWhere(['like', 'short', $this->short])

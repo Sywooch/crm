@@ -6,8 +6,8 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\models\ProjectStatus */
 
-$this->title = 'Create Project Status';
-$this->params['breadcrumbs'][] = ['label' => 'Project Statuses', 'url' => ['index']];
+$this->title = 'Добавить статус';
+$this->params['breadcrumbs'][] = ['label' => 'Статусы проектов', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="project-status-create">

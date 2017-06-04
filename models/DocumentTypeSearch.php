@@ -18,7 +18,7 @@ class DocumentTypeSearch extends DocumentType
     public function rules()
     {
         return [
-            [['id'], 'integer'],
+            [['document_type_id'], 'integer'],
             [['name'], 'safe'],
         ];
     }
@@ -59,7 +59,7 @@ class DocumentTypeSearch extends DocumentType
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
+            'document_type_id' => $this->document_type_id,
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name]);

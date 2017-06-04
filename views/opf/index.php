@@ -3,32 +3,38 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
+
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\ContractorOpfSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Contractor Opfs';
+$this->title = 'Организационно-правовые формы';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="contractor-opf-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
-    <p>
-        <?= Html::a('Create Contractor Opf', ['create'], ['class' => 'btn btn-success']) ?>
+    <p class="text-right">
+        <?= Html::a('Добавить', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
-<?php Pjax::begin(); ?>    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-
-            'id',
-            'short',
-            'name',
-
-            ['class' => 'yii\grid\ActionColumn'],
-        ],
-    ]); ?>
-<?php Pjax::end(); ?></div>
+    <div class="panel">
+        <div class="panel-body">
+            <?php Pjax::begin(); ?>   
+            <?=
+            GridView::widget(array_merge(Yii::$app->params['GridView'], [
+                'dataProvider' => $dataProvider,
+                'columns' => [
+                    'short',
+                    'name',
+                    ['class' => 'yii\grid\ActionColumn',
+                        'template' => '{update} {delete}',
+                        'headerOptions' => [
+                            'width' => 45,
+                        ],
+                    ],
+                ],
+            ]));
+            ?>
+            <?php Pjax::end(); ?>
+        </div>
+    </div>
+</div>

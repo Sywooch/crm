@@ -7,7 +7,7 @@ use yii\helpers\Html;
 
 $this->title = $model->getFullName(true);
 $this->params['breadcrumbs'][] = ['label' => 'Контакты', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->getFullName(true), 'url' => ['view', 'id' => $model->id]];
+$this->params['breadcrumbs'][] = ['label' => $model->getFullName(true), 'url' => ['view', 'id' => $model->contact_id]];
 $this->params['breadcrumbs'][] = 'Изменить';
 ?>
 <div class="contact-update">

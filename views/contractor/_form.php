@@ -41,7 +41,7 @@ use yii\widgets\MaskedInput;
                         <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
                         <?=
-                        $form->field($model, 'id_opf')->widget(Select2::classname(), [
+                        $form->field($model, 'opf_id')->widget(Select2::classname(), [
                             'data' => Opf::getList(),
                             'language' => 'ru',
                             'theme' => Select2::THEME_BOOTSTRAP,
@@ -81,12 +81,18 @@ use yii\widgets\MaskedInput;
                         <?=
                         $form->field($model, 'phone')->textInput(['maxlength' => true])->widget(MaskedInput::className(), [
                             'mask' => '+7 (999) 999-99-99',
+                            'clientOptions' => [
+                                'removeMaskOnSubmit' => true
+                            ]
                         ])
                         ?>
 
                         <?=
                         $form->field($model, 'fax')->textInput(['maxlength' => true])->widget(MaskedInput::className(), [
-                            'mask' => '+7 (999) 999-99-99',
+                            'mask' => '+7 (999) 999-99-99', 
+                            'clientOptions' => [
+                                'removeMaskOnSubmit' => true
+                            ]
                         ])
                         ?>
                     </div>

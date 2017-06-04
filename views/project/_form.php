@@ -11,8 +11,8 @@ use kartik\select2\Select2;
 /* @var $model app\models\Project */
 /* @var $form yii\widgets\ActiveForm */
 
-$statuses = ArrayHelper::map(app\models\ProjectStatus::find()->orderBy('name')->all(), 'id', 'name');
-$users = ArrayHelper::map(app\models\User::find()->orderBy('lastname')->all(), 'id', 'fullname');
+$statuses = ArrayHelper::map(app\models\ProjectStatus::find()->orderBy('name')->all(), 'project_status_id', 'name');
+$users = ArrayHelper::map(app\models\User::find()->orderBy('lastname')->all(), 'user_id', 'fullname');
 ?>
 
 <div class="project-form">
@@ -21,7 +21,7 @@ $users = ArrayHelper::map(app\models\User::find()->orderBy('lastname')->all(), '
     $form = ActiveForm::begin(Yii::$app->params['ActiveForm']);
     ?>
     <div class="row">
-        <div class="col-xs-6">
+        <div class="col-xs-7">
             <div class="panel panel-default">
                 <div class="panel-heading">
                     Основные данные
@@ -49,20 +49,21 @@ $users = ArrayHelper::map(app\models\User::find()->orderBy('lastname')->all(), '
                 </div>
             </div>
         </div>
-        <div class="col-xs-6">
+        <div class="col-xs-5">
             <div class="panel panel-default">
                 <div class="panel-heading">
                     Параметры
                 </div>
                 <div class="panel-body">
                     <?=
-                    $form->field($model, 'id_user')->widget(Select2::classname(), [
+                    $form->field($model, 'user_id')->widget(Select2::classname(), [
                         'data' => $users,
-                        'options' => ['placeholder' => 'Выберите ответственного пользователя...'],
+                        'theme' => Select2::THEME_BOOTSTRAP,
+                        'options' => ['placeholder' => 'Выберите пользователя ...'],
                     ])
                     ?>
 
-                    <?= $form->field($model, 'id_status')->radioList($statuses, ['prompt' => 'Статус проекта']) ?>
+                    <?= $form->field($model, 'project_status_id')->radioList($statuses, ['prompt' => 'Статус проекта']) ?>
                 </div>
             </div>
         </div>

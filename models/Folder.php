@@ -3,17 +3,29 @@
 namespace app\models;
 
 use Yii;
+use yii\helpers\ArrayHelper;
+use yii\behaviors\TimestampBehavior;
 
 /**
  * This is the model class for table "{{%folder}}".
  *
- * @property integer $id
+ * @property integer $folder_id
  * @property string $name
  *
  * @property Document[] $documents
  */
 class Folder extends \yii\db\ActiveRecord
 {
+
+    public function behaviors()
+    {
+        return [
+            'timestamp' => [
+                'class' => TimestampBehavior::className()
+            ]
+        ];
+    }
+
     /**
      * @inheritdoc
      */
@@ -40,7 +52,7 @@ class Folder extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
+            'folder_id' => 'ID',
             'name' => 'Наименование',
         ];
     }
@@ -50,6 +62,12 @@ class Folder extends \yii\db\ActiveRecord
      */
     public function getDocuments()
     {
-        return $this->hasMany(Document::className(), ['id_folder' => 'id']);
+        return $this->hasMany(Document::className(), ['folder_id' => 'folder_id']);
     }
+
+    public static function getList()
+    {
+        return ArrayHelper::map(self::find()->orderBy('name')->all(), 'folder_id', 'name');
+    }
+
 }

@@ -18,7 +18,7 @@ class RelationshipSearch extends Relationship
     public function rules()
     {
         return [
-            [['id', 'id_contractor', 'id_contact', 'id_autor', 'datetime'], 'integer'],
+            [['relationship_id', 'contractor_id', 'contact_id', 'user_id', 'datetime'], 'integer'],
             [['title', 'description'], 'safe'],
         ];
     }
@@ -59,10 +59,10 @@ class RelationshipSearch extends Relationship
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
-            'id_contractor' => $this->id_contractor,
-            'id_contact' => $this->id_contact,
-            'id_autor' => $this->id_autor,
+            'relationship_id' => $this->relationship_id,
+            'contractor_id' => $this->contractor_id,
+            'contact_id' => $this->contact_id,
+            'user_id' => $this->user_id,
             'datetime' => $this->datetime,
         ]);
 

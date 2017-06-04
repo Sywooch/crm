@@ -14,20 +14,20 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <p class="menu">
         <?=
-        html::a('Взаимоотношения <i class="fa fa-thumbs-o-up" aria-hidden="true"></i> ', ['contact/' . $model->id . '/relationships'], [
+        html::a('Взаимоотношения <i class="fa fa-thumbs-o-up" aria-hidden="true"></i> ', ['relationship/index', 'relation' => 'contact', 'relation_id' => $model->contact_id], [
             'class' => 'btn btn-default btn-sm'
         ])
         ?>
 
         <?=
-        html::a('Документы <i class="fa fa-file" aria-hidden="true"></i> ', ['/document', 'contact' => $model->id], [
+        html::a('Документы <i class="fa fa-file" aria-hidden="true"></i> ', ['document/index', 'relation' => 'contact', 'relation_id' => $model->contact_id], [
             'class' => 'btn btn-default btn-sm'
         ])
         ?>
     </p>
 
     <div class="row">
-        <div class="col-xs-6">
+        <div class="col-xs-7">
             <div class="panel panel-default">
                 <div class="panel-heading">
                     Основные данные
@@ -43,22 +43,26 @@ $this->params['breadcrumbs'][] = $this->title;
                             <?= Html::tag('p', $model->firstname, Yii::$app->params['html']['form-control-static']) ?>
                         </div>
                         <div class="form-group">    
-                            <?= Html::activeLabel($model, 'patronimyc', Yii::$app->params['html']['control-label']); ?>
-                            <?= Html::tag('p', $model->patronimyc, Yii::$app->params['html']['form-control-static']) ?>
+                            <?= Html::activeLabel($model, 'patronymic', Yii::$app->params['html']['control-label']); ?>
+                            <?= Html::tag('p', $model->patronymic, Yii::$app->params['html']['form-control-static']) ?>
                         </div>
                         <div class="form-group">    
                             <?= Html::activeLabel($model, 'post', Yii::$app->params['html']['control-label']); ?>
                             <?= Html::tag('p', $model->post, Yii::$app->params['html']['form-control-static']) ?>
                         </div>
                         <div class="form-group">    
-                            <?= Html::activeLabel($model, 'id_contractor', Yii::$app->params['html']['control-label']); ?>
+                            <?= Html::activeLabel($model, 'authority_basis_id', Yii::$app->params['html']['control-label']); ?>
+                            <?= Html::tag('p', $model->authorityBasis->name, Yii::$app->params['html']['form-control-static']) ?>
+                        </div>
+                        <div class="form-group">    
+                            <?= Html::activeLabel($model, 'contractor_id', Yii::$app->params['html']['control-label']); ?>
                             <?= Html::tag('p', $model->contractor->name, Yii::$app->params['html']['form-control-static']) ?>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-xs-6">
+        <div class="col-xs-5">
             <div class="panel panel-default">
                 <div class="panel-heading">
                     Контакты
@@ -95,9 +99,9 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
 
     <p class="text-right">
-        <?= Html::a('Изменить', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Изменить', ['update', 'id' => $model->contact_id], ['class' => 'btn btn-primary']) ?>
         <?=
-        Html::a('Удалить', ['delete', 'id' => $model->id], [
+        Html::a('Удалить', ['delete', 'id' => $model->contact_id], [
             'class' => 'btn btn-danger',
             'data' => [
                 'confirm' => 'Вы действительно хотите удалить данные?',

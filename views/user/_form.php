@@ -1,12 +1,13 @@
 <?php
+/* @var $this yii\web\View */
+/* @var $model app\models\User */
+/* @var $form yii\widgets\ActiveForm */
 
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 use yii\widgets\MaskedInput;
-
-/* @var $this yii\web\View */
-/* @var $model app\models\User */
-/* @var $form yii\widgets\ActiveForm */
+use kartik\select2\Select2;
+use app\models\AuthItem;
 ?>
 
 <div class="user-form">
@@ -27,7 +28,7 @@ use yii\widgets\MaskedInput;
     ]);
     ?>
     <div class="row">
-        <div class="col-xs-6">
+        <div class="col-xs-7">
             <div class="panel panel-default">
                 <div class="panel-heading">Данные пользователя</div>
                 <div class="panel-body">
@@ -35,13 +36,13 @@ use yii\widgets\MaskedInput;
 
                     <?= $form->field($model, 'firstname')->textInput(['maxlength' => true]) ?>
 
-                    <?= $form->field($model, 'patronimyc')->textInput(['maxlength' => true]) ?>
+                    <?= $form->field($model, 'patronymic')->textInput(['maxlength' => true]) ?>
 
                     <?= $form->field($model, 'post')->textInput(['maxlength' => true]) ?>
                 </div>
             </div>
         </div>
-        <div class="col-xs-6">
+        <div class="col-xs-5">
             <div class="panel panel-default">
                 <div class="panel-heading">Контактные данные</div>
                 <div class="panel-body">
@@ -55,25 +56,50 @@ use yii\widgets\MaskedInput;
                     ?>
 
                     <?=
-                    $form->field($model, 'phone')->textInput(['maxlength' => true])->widget(MaskedInput::className(), [
+                    $form->field($model, 'mobilephone')->textInput(['maxlength' => true])->widget(MaskedInput::className(), [
                         'mask' => '+7 (999) 999-99-99',
+                        'clientOptions' => [
+                            'removeMaskOnSubmit' => true
+                        ]
+                    ])
+                    ?>
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-heading">Роли пользователя</div>
+                <div class="panel-body">
+
+                    <?=
+                    $form->field($model, 'role', [
+                        'template' => "{beginWrapper}{input}<small>{hint}{error}</small>{endWrapper}",
+                        'horizontalCssClasses' => [
+                            'wrapper' => 'col-xs-12',
+                            'error' => '',
+                            'hint' => '',
+                        ],
+                    ])->widget(Select2::className(), [
+                        'data' => AuthItem::getList(),
+                        'theme' => Select2::THEME_BOOTSTRAP,
+                        'options' => [
+                            'placeholder' => 'Выберите роли ...',
+                            'multiple' => true
+                        ],
+                        'pluginOptions' => [
+                            'allowClear' => true
+                        ],
                     ])
                     ?>
 
-                    <?=
-                    $form->field($model, 'mobilephone')->textInput(['maxlength' => true])->widget(MaskedInput::className(), [
-                        'mask' => '+7 (999) 999-99-99',
-                    ])
-                    ?>
                 </div>
             </div>
         </div>
     </div>
 
     <div class="text-right">
-<?= Html::submitButton($model->isNewRecord ? 'Добавить' : 'Обновить', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+        <?= Html::submitButton($model->isNewRecord ? 'Добавить' : 'Обновить', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
     </div>
 
-<?php ActiveForm::end(); ?>
+    <?php ActiveForm::end(); ?>
 
 </div>

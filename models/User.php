@@ -5,17 +5,17 @@ namespace app\models;
 use Yii;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
+use yii\behaviors\TimestampBehavior;
 
 /**
  * This is the model class for table "{{%user}}".
  *
- * @property integer $id
+ * @property integer $user_id
  * @property string $lastname
  * @property string $firstname
- * @property string $patronimyc
+ * @property string $patronymic
  * @property string $post
  * @property string $email
- * @property string $phone
  * @property string $mobilephone
  * @property string $password_hash
  * @property string $password_reset_token
@@ -27,16 +27,31 @@ use yii\web\IdentityInterface;
  */
 class User extends ActiveRecord implements IdentityInterface
 {
+    public $old_password;
     public $password;
     public $password_confirm;
+    public $role;
 
+    const SCENARIO_PROFILE = 'profile';
     const SCENARIO_RESET_PASSWORD = 'reset_password';
+    const SCENARIO_CHANGE_PASSWORD = 'change_password';
+
+    public function behaviors()
+    {
+        return [
+            'timestamp' => [
+                'class' => TimestampBehavior::className()
+            ]
+        ];
+    }
 
     public function scenarios()
     {
         return [
-            self::SCENARIO_DEFAULT => ['firstname', 'lastname', 'patronimyc', 'email', 'post', 'phone', 'mobilephone'],
+            self::SCENARIO_DEFAULT => ['firstname', 'lastname', 'patronymic', 'email', 'post', 'mobilephone', 'role'],
+            self::SCENARIO_PROFILE => ['firstname', 'lastname', 'patronymic', 'mobilephone'],
             self::SCENARIO_RESET_PASSWORD => ['password', 'password_confirm'],
+            self::SCENARIO_CHANGE_PASSWORD => ['old_password', 'password', 'password_confirm'],
         ];
     }
 
@@ -49,24 +64,27 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return [
             ['email', 'email'],
-            [['lastname', 'firstname', 'patronimyc', 'post', 'email'], 'required'],
-            [['password', 'password_confirm'], 'required', 'on' => self::SCENARIO_RESET_PASSWORD],
-            ['password', 'string', 'min' => 8, 'on' => self::SCENARIO_RESET_PASSWORD],
-            ['password_confirm', 'compare', 'compareAttribute' => 'password', 'message' => 'Пароли не совпадают', 'on' => self::SCENARIO_RESET_PASSWORD],
+            [['lastname', 'firstname', 'patronymic', 'post', 'email', 'role'], 'required', 'on' => self::SCENARIO_DEFAULT],
+            [['lastname', 'firstname', 'patronymic'], 'required', 'on' => self::SCENARIO_PROFILE],
+            ['old_password', 'required', 'on' => self::SCENARIO_CHANGE_PASSWORD],
+            ['old_password', 'checkOldPassword', 'on' => self::SCENARIO_CHANGE_PASSWORD],
+            [['password', 'password_confirm'], 'required', 'on' => [self::SCENARIO_CHANGE_PASSWORD, self::SCENARIO_RESET_PASSWORD]],
+            ['password', 'string', 'min' => 8, 'on' => [self::SCENARIO_CHANGE_PASSWORD, self::SCENARIO_RESET_PASSWORD]],
+            ['password_confirm', 'compare', 'compareAttribute' => 'password', 'message' => 'Пароли не совпадают', 'on' => [self::SCENARIO_CHANGE_PASSWORD, self::SCENARIO_RESET_PASSWORD]],
         ];
     }
 
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
+            'user_id' => 'ID',
             'lastname' => 'Фамилия',
             'firstname' => 'Имя',
-            'patronimyc' => 'Отчество',
+            'patronymic' => 'Отчество',
             'post' => 'Должность',
             'email' => 'E-mail',
-            'phone' => 'Телефон',
-            'mobilephone' => 'Мобильный телефон',
+            'mobilephone' => 'Телефон',
+            'old_password' => 'Старый пароль',
             'password' => 'Пароль',
             'password_confirm' => 'Пароль еще раз',
         ];
@@ -75,9 +93,9 @@ class User extends ActiveRecord implements IdentityInterface
     public function getFullname($short = false)
     {
         if ($short) {
-            return $this->lastname . ' ' . mb_substr($this->firstname, 0, 1) . '. ' . mb_substr($this->patronimyc, 0, 1) . '.';
+            return $this->lastname . ' ' . mb_substr($this->firstname, 0, 1) . '. ' . mb_substr($this->patronymic, 0, 1) . '.';
         } else {
-            return $this->lastname . ' ' . $this->firstname . ' ' . $this->patronimyc;
+            return $this->lastname . ' ' . $this->firstname . ' ' . $this->patronymic;
         }
     }
 
@@ -86,7 +104,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getProjects()
     {
-        return $this->hasMany(Project::className(), ['id_user_author' => 'id']);
+        return $this->hasMany(Project::className(), ['id_user_author' => 'user_id']);
     }
 
     /**
@@ -94,7 +112,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getProjects0()
     {
-        return $this->hasMany(Project::className(), ['id_user_service' => 'id']);
+        return $this->hasMany(Project::className(), ['id_user_service' => 'user_id']);
     }
 
     /**
@@ -102,7 +120,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getRelationships()
     {
-        return $this->hasMany(Relationship::className(), ['id_autor' => 'id']);
+        return $this->hasMany(Relationship::className(), ['id_autor' => 'user_id']);
     }
 
     public function getAuthKey()
@@ -112,7 +130,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     public function getId()
     {
-        return $this->id;
+        return $this->user_id;
     }
 
     public function validateAuthKey($authKey)
@@ -177,6 +195,44 @@ class User extends ActiveRecord implements IdentityInterface
     public function validatePassword($password)
     {
         return Yii::$app->security->validatePassword($password, $this->password_hash);
+    }
+
+    public function checkOldPassword($attribute, $params)
+    {
+        if (!Yii::$app->user->identity->validatePassword($this->$attribute)) {
+            $this->addError($attribute, 'Старый пароль указан не верно');
+        }
+    }
+
+    public function beforeSave($insert)
+    {
+        parent::beforeSave($insert);
+
+        $authManager = Yii::$app->authManager;
+        $authManager->revokeAll($this->id);
+        $result = false;
+        foreach ($this->role as $role) {
+            $r = $authManager->getRole($role);
+            if ($r) {
+                $authManager->assign($r, $this->user_id);
+                $result = true;
+            }
+        }
+
+        return $result;
+    }
+
+    public function afterFind()
+    {
+        parent::afterFind();
+
+        $authManager = Yii::$app->authManager;
+
+        $roles = $authManager->getRolesByUser($this->user_id);
+        foreach($roles as $key => $role) {
+            $this->role[] = $key;
+        }
+                
     }
 
 }

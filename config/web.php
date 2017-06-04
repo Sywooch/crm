@@ -31,6 +31,16 @@ $config = [
             // for the mailer to send real emails.
             'useFileTransport' => true,
         ],
+        'assetManager' => [
+            'bundles' => [
+                'yii\bootstrap\BootstrapPluginAsset' => [
+                //'js' => []
+                ],
+                'yii\bootstrap\BootstrapAsset' => [
+                    'css' => [],
+                ],
+            ],
+        ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
             'targets' => [
@@ -46,8 +56,13 @@ $config = [
             'showScriptName' => false,
             'rules' => [
                 [
-                    'pattern' => '<relation:(contractor|contact)>/<relation_id:\d+>/relationships/<action:(index|create|update|view|delete)>/<id:\d+>',
-                    'route' => 'relationship/<action>',
+                    'pattern' => '<relation:(contractor|contact)>/<relation_id:\d+>/<controller:relationship>/<action>/<id:\d+>',
+                    'route' => '<controller>/<action>',
+                    'defaults' => ['action' => 'index', 'id' => '']
+                ],
+                [
+                    'pattern' => '<relation:(project|contractor|contact)>/<relation_id:\d+>/<controller:document>/<action>/<id:\d+>',
+                    'route' => '<controller>/<action>',
                     'defaults' => ['action' => 'index', 'id' => '']
                 ],
                 '<controller>/<action>/<id:\d+>' => '<controller>/<action>',
@@ -70,7 +85,10 @@ $config = [
             'dateFormat' => 'php:d.m.Y',
             'datetimeFormat' => 'php:d.m.Y H:i:s',
             'timeFormat' => 'php:H:i:s',
-        ]
+        ],
+        'authManager' => [
+            'class' => 'yii\rbac\DbManager',
+        ],
     ],
     'as access' => [
         'class' => 'yii\filters\AccessControl',

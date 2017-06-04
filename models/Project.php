@@ -4,17 +4,18 @@ namespace app\models;
 
 use Yii;
 use yii\helpers\ArrayHelper;
+use yii\behaviors\TimestampBehavior;
 
 /**
  * This is the model class for table "{{%project}}".
  *
- * @property integer $id
+ * @property integer $project_id
  * @property string $name
  * @property string $description
  * @property string $site
  * @property string $site_test
- * @property integer $id_user
- * @property integer $id_status
+ * @property integer $user_id
+ * @property integer $project_status_id
  *
  * @property ProjectStatus $status
  * @property User $user
@@ -22,6 +23,15 @@ use yii\helpers\ArrayHelper;
  */
 class Project extends \yii\db\ActiveRecord
 {
+    
+    public function behaviors()
+    {
+        return [
+            'timestamp' => [
+                'class' => TimestampBehavior::className()
+            ]
+        ];
+    }
 
     /**
      * @inheritdoc
@@ -37,12 +47,12 @@ class Project extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'site', 'id_user', 'id_status'], 'required'],
-            [['id_user', 'id_status'], 'integer'],
+            [['name', 'site', 'user_id', 'project_status_id'], 'required'],
+            [['user_id', 'project_status_id'], 'integer'],
             [['name', 'description', 'site', 'site_test'], 'string', 'max' => 255],
             [['site', 'site_test'], 'url', 'defaultScheme' => 'http'],
-            [['id_status'], 'exist', 'skipOnError' => true, 'targetClass' => ProjectStatus::className(), 'targetAttribute' => ['id_status' => 'id']],
-            [['id_user'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['id_user' => 'id']],];
+            [['project_status_id'], 'exist', 'skipOnError' => true, 'targetClass' => ProjectStatus::className(), 'targetAttribute' => ['project_status_id' => 'project_status_id']],
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'user_id']],];
     }
 
     /**
@@ -51,13 +61,13 @@ class Project extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
+            'project_id' => 'ID',
             'name' => 'Наименование',
             'description' => 'Описание',
             'site' => 'Сайт',
             'site_test' => 'Тестовый сайт',
-            'id_user' => 'Ответственный',
-            'id_status' => 'Статус проекта',
+            'user_id' => 'Ответственный',
+            'project_status_id' => 'Статус проекта',
         ];
     }
 
@@ -66,7 +76,7 @@ class Project extends \yii\db\ActiveRecord
      */
     public function getStatus()
     {
-        return $this->hasOne(ProjectStatus::className(), ['id' => 'id_status']);
+        return $this->hasOne(ProjectStatus::className(), ['project_status_id' => 'project_status_id']);
     }
 
     /**
@@ -74,7 +84,7 @@ class Project extends \yii\db\ActiveRecord
      */
     public function getUser()
     {
-        return $this->hasOne(User::className(), ['id' => 'id_user']);
+        return $this->hasOne(User::className(), ['user_id' => 'user_id']);
     }
 
     /**
@@ -82,18 +92,24 @@ class Project extends \yii\db\ActiveRecord
      */
     public function getContractors()
     {
-        return $this->hasMany(Contractor::className(), ['id' => 'id_contractor'])
-                        ->viaTable('{{%lnk_project_contractor}}', ['id_project' => 'id']);
+        return $this->hasMany(Contractor::className(), ['contractor_id' => 'contractor_id'])
+                        ->viaTable('{{%lnk_project_contractor}}', ['project_id' => 'project_id']);
     }
 
     public function getStatusName()
     {
         return $this->status->name;
     }
-    
-    public static function getList() {
+
+    public static function getList()
+    {
         $projects = self::find()->orderBy('name')->all();
-        return ArrayHelper::map($projects, 'id', 'name');
+        return ArrayHelper::map($projects, 'project_id', 'name');
+    }
+    
+    public function getLabelBreadcrumbs() 
+    {
+        return $this->name;
     }
 
 }

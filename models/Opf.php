@@ -4,11 +4,12 @@ namespace app\models;
 
 use Yii;
 use yii\helpers\ArrayHelper;
+use yii\behaviors\TimestampBehavior;
 
 /**
  * This is the model class for table "{{%opf}}".
  *
- * @property integer $id
+ * @property integer $opf_id
  * @property string $short
  * @property string $name
  *
@@ -16,6 +17,16 @@ use yii\helpers\ArrayHelper;
  */
 class Opf extends \yii\db\ActiveRecord
 {
+
+    public function behaviors()
+    {
+        return [
+            'timestamp' => [
+                'class' => TimestampBehavior::className()
+            ]
+        ];
+    }
+
     /**
      * @inheritdoc
      */
@@ -41,7 +52,7 @@ class Opf extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
+            'opf_id' => 'ID',
             'short' => 'Сокращение',
             'name' => 'Наименование',
         ];
@@ -52,11 +63,13 @@ class Opf extends \yii\db\ActiveRecord
      */
     public function getContractors()
     {
-        return $this->hasMany(Contractor::className(), ['id_opf' => 'id']);
+        return $this->hasMany(Contractor::className(), ['opf_id' => 'opf_id']);
     }
-    
-    public static function getList() {
+
+    public static function getList()
+    {
         $list = self::find()->orderBy('name')->all();
-        return ArrayHelper::map($list, 'id', 'name');
+        return ArrayHelper::map($list, 'opf_id', 'name');
     }
+
 }

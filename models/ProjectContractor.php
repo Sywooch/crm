@@ -7,11 +7,11 @@ use Yii;
 /**
  * This is the model class for table "{{%project_contractor}}".
  *
- * @property integer $id_project
- * @property integer $id_contractor
+ * @property integer $project_id
+ * @property integer $contractor_id
  *
- * @property Project $idProject
- * @property Contractor $idContractor
+ * @property Project $project
+ * @property Contractor $contractor
  */
 class ProjectContractor extends \yii\db\ActiveRecord
 {
@@ -29,10 +29,10 @@ class ProjectContractor extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id_project', 'id_contractor'], 'required'],
-            [['id_project', 'id_contractor'], 'integer'],
-            [['id_project'], 'exist', 'skipOnError' => true, 'targetClass' => Project::className(), 'targetAttribute' => ['id_project' => 'id']],
-            [['id_contractor'], 'exist', 'skipOnError' => true, 'targetClass' => Contractor::className(), 'targetAttribute' => ['id_contractor' => 'id']],
+            [['project_id', 'contractor_id'], 'required'],
+            [['project_id', 'contractor_id'], 'integer'],
+            [['project_id'], 'exist', 'skipOnError' => true, 'targetClass' => Project::className(), 'targetAttribute' => ['project_id' => 'id']],
+            [['contractor_id'], 'exist', 'skipOnError' => true, 'targetClass' => Contractor::className(), 'targetAttribute' => ['contractor_id' => 'contractor_id']],
         ];
     }
 
@@ -42,24 +42,24 @@ class ProjectContractor extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id_project' => 'Проект',
-            'id_contractor' => 'Контрагент',
+            'project_id' => 'Проект',
+            'contractor_id' => 'Контрагент',
         ];
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getIdProject()
+    public function getProject()
     {
-        return $this->hasOne(Project::className(), ['id' => 'id_project']);
+        return $this->hasOne(Project::className(), ['project_id' => 'project_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getIdContractor()
+    public function getContractor()
     {
-        return $this->hasOne(Contractor::className(), ['id' => 'id_contractor']);
+        return $this->hasOne(Contractor::className(), ['contractor_id' => 'contractor_id']);
     }
 }

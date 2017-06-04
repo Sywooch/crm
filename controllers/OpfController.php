@@ -8,6 +8,7 @@ use app\models\OpfSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
 
 /**
  * ContractorOpfController implements the CRUD actions for ContractorOpf model.
@@ -24,6 +25,15 @@ class OpfController extends Controller
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['POST'],
+                ],
+            ],
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['administrator'],
+                    ],
                 ],
             ],
         ];
@@ -45,28 +55,16 @@ class OpfController extends Controller
     }
 
     /**
-     * Displays a single ContractorOpf model.
-     * @param integer $id
-     * @return mixed
-     */
-    public function actionView($id)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
-    }
-
-    /**
      * Creates a new ContractorOpf model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
+     * If creation is successful, the browser will be redirected to the 'update' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new ContractorOpf();
+        $model = new Opf();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['update', 'id' => $model->opf_id]);
         } else {
             return $this->render('create', [
                 'model' => $model,
@@ -76,7 +74,7 @@ class OpfController extends Controller
 
     /**
      * Updates an existing ContractorOpf model.
-     * If update is successful, the browser will be redirected to the 'view' page.
+     * If update is successful, the browser will be redirected to the 'update' page.
      * @param integer $id
      * @return mixed
      */
@@ -85,7 +83,7 @@ class OpfController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['update', 'id' => $model->opf_id]);
         } else {
             return $this->render('update', [
                 'model' => $model,

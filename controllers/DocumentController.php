@@ -4,16 +4,19 @@ namespace app\controllers;
 
 use Yii;
 use app\models\Document;
-use app\models\DocumentSearch;
+use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\UploadedFile;
+use yii\filters\AccessControl;
 
 /**
  * DocumentController implements the CRUD actions for Document model.
  */
 class DocumentController extends Controller
 {
+
     /**
      * @inheritdoc
      */
@@ -26,6 +29,15 @@ class DocumentController extends Controller
                     'delete' => ['POST'],
                 ],
             ],
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['manager'],
+                    ],
+                ],
+            ],
         ];
     }
 
@@ -33,14 +45,30 @@ class DocumentController extends Controller
      * Lists all Document models.
      * @return mixed
      */
-    public function actionIndex()
+    public function actionIndex($relation = null, $relation_id = null)
     {
-        $searchModel = new DocumentSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        if ($relation === null || $relation_id === null) {
+            $dataProvider = new ActiveDataProvider([
+                'query' => Document::find(),
+                'pagination' => [
+                    'pageSize' => 20,
+                ],
+            ]);
+        } else {
+            $this->setBreadcrumbs($relation, $relation_id);
+
+            $dataProvider = new ActiveDataProvider([
+                'query' => Document::find()->where([$relation . '_id' => $relation_id]),
+                'pagination' => [
+                    'pageSize' => 20,
+                ],
+            ]);
+        }
 
         return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
+                    'dataProvider' => $dataProvider,
+                    'relation' => $relation,
+                    'relation_id' => $relation_id
         ]);
     }
 
@@ -49,10 +77,14 @@ class DocumentController extends Controller
      * @param integer $id
      * @return mixed
      */
-    public function actionView($id)
+    public function actionView($id, $relation, $relation_id)
     {
+        $this->setBreadcrumbs($relation, $relation_id);
+
         return $this->render('view', [
-            'model' => $this->findModel($id),
+                    'model' => $this->findModel($id),
+                    'relation' => $relation,
+                    'relation_id' => $relation_id
         ]);
     }
 
@@ -61,17 +93,24 @@ class DocumentController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
+    public function actionCreate($relation, $relation_id)
     {
+        $this->setBreadcrumbs($relation, $relation_id);
+
         $model = new Document();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('create', [
-                'model' => $model,
-            ]);
+        if ($model->load(Yii::$app->request->post())) {
+            $model->file = UploadedFile::getInstance($model, 'file');
+            if ($model->upload() && $model->save()) {
+                return $this->redirect(['index', 'relation' => $relation, 'relation_id' => $relation_id]);
+            }
         }
+
+        return $this->render('create', [
+                    'model' => $model,
+                    'relation' => $relation,
+                    'relation_id' => $relation_id
+        ]);
     }
 
     /**
@@ -80,15 +119,17 @@ class DocumentController extends Controller
      * @param integer $id
      * @return mixed
      */
-    public function actionUpdate($id)
+    public function actionUpdate($id, $relation, $relation_id)
     {
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['view', 'id' => $model->document_id, 'relation' => $relation, 'relation_id' => $relation_id]);
         } else {
             return $this->render('update', [
-                'model' => $model,
+                        'model' => $model,
+                        'relation' => $relation,
+                        'relation_id' => $relation_id
             ]);
         }
     }
@@ -121,4 +162,20 @@ class DocumentController extends Controller
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
+
+    private function setBreadcrumbs($relation, $relation_id)
+    {
+        $class = 'app\\models\\' . ucfirst($relation);
+        if (!class_exists($class)) {
+            throw new NotFoundHttpException('Страница не найдена');
+        }
+
+        $model = $class::findOne($relation_id);
+        if (!$model) {
+            throw new NotFoundHttpException('Страница не найдена');
+        }
+        $this->view->params['breadcrumbs'][] = ['label' => Yii::t('app', $relation), 'url' => ['/' . $relation]];
+        $this->view->params['breadcrumbs'][] = ['label' => $model->getLabelBreadcrumbs(), 'url' => [$relation . '/view', 'id' => $relation_id]];
+    }
+
 }

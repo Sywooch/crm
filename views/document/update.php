@@ -5,14 +5,12 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\models\Document */
 
-$this->title = 'Update Document: ' . $model->name;
-$this->params['breadcrumbs'][] = ['label' => 'Documents', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->title = $model->name;
+$this->params['breadcrumbs'][] = ['label' => 'Документы', 'url' => ['index', 'relation' => $relation, 'relation_id' => $relation_id]];
+$this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->document_id], 'relation' => $relation, 'relation_id' => $relation_id];
+$this->params['breadcrumbs'][] = 'Изменить';
 ?>
 <div class="document-update">
-
-    <h1><?= Html::encode($this->title) ?></h1>
 
     <?= $this->render('_form', [
         'model' => $model,

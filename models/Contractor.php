@@ -4,12 +4,13 @@ namespace app\models;
 
 use Yii;
 use yii\helpers\ArrayHelper;
+use yii\behaviors\TimestampBehavior;
 
 /**
  * This is the model class for table "{{%contractor}}".
  *
- * @property integer $id
- * @property integer $id_opf
+ * @property integer $contractor_id
+ * @property integer $opf_id
  * @property string $name
  * @property string $email
  * @property string $phone
@@ -44,6 +45,15 @@ class Contractor extends \yii\db\ActiveRecord
 {
     public $projects;
 
+    public function behaviors()
+    {
+        return [
+            'timestamp' => [
+                'class' => TimestampBehavior::className()
+            ]
+        ];
+    }
+
     /**
      * @inheritdoc
      */
@@ -58,14 +68,14 @@ class Contractor extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id_opf', 'name', 'email', 'phone', 'legal_region', 'legal_city', 'legal_street', 'legal_house', 'legal_postcode', 'mailing_region', 'mailing_city', 'mailing_street', 'mailing_house', 'mailing_postcode'], 'required'],
-            [['id_opf', 'legal_postcode', 'mailing_postcode'], 'integer'],
+            [['opf_id', 'name', 'email', 'phone', 'legal_region', 'legal_city', 'legal_street', 'legal_house', 'legal_postcode', 'mailing_region', 'mailing_city', 'mailing_street', 'mailing_house', 'mailing_postcode'], 'required'],
+            [['opf_id', 'legal_postcode', 'mailing_postcode'], 'integer'],
             [['name', 'email', 'legal_country', 'legal_region', 'legal_city', 'legal_street', 'legal_house', 'mailing_country', 'mailing_region', 'mailing_city', 'mailing_street', 'mailing_house', 'bank'], 'string', 'max' => 255],
             [['phone', 'fax'], 'string', 'max' => 20],
             ['projects', 'safe'],
             ['projects', 'required'],
             [['bik', 'rs', 'ks', 'ogrn', 'kpp', 'inn'], 'string', 'max' => 100],
-            [['id_opf'], 'exist', 'skipOnError' => true, 'targetClass' => Opf::className(), 'targetAttribute' => ['id_opf' => 'id']],
+            [['opf_id'], 'exist', 'skipOnError' => true, 'targetClass' => Opf::className(), 'targetAttribute' => ['opf_id' => 'opf_id']],
         ];
     }
 
@@ -75,8 +85,8 @@ class Contractor extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'id_opf' => 'ОПФ',
+            'contractor_id' => 'ID',
+            'opf_id' => 'ОПФ',
             'name' => 'Наименование',
             'email' => 'E-mail',
             'phone' => 'Телефон',
@@ -109,7 +119,7 @@ class Contractor extends \yii\db\ActiveRecord
      */
     public function getOpf()
     {
-        return $this->hasOne(Opf::className(), ['id' => 'id_opf']);
+        return $this->hasOne(Opf::className(), ['opf_id' => 'opf_id']);
     }
 
     /**
@@ -117,7 +127,7 @@ class Contractor extends \yii\db\ActiveRecord
      */
     public function getContacts()
     {
-        return $this->hasMany(Contact::className(), ['id_contractor' => 'id']);
+        return $this->hasMany(Contact::className(), ['contractor_id' => 'contractor_id']);
     }
 
     /**
@@ -125,7 +135,7 @@ class Contractor extends \yii\db\ActiveRecord
      */
     public function getDocuments()
     {
-        return $this->hasMany(Document::className(), ['id_contractor' => 'id']);
+        return $this->hasMany(Document::className(), ['contractor_id' => 'contractor_id']);
     }
 
     /**
@@ -133,8 +143,8 @@ class Contractor extends \yii\db\ActiveRecord
      */
     public function getProjects()
     {
-        return $this->hasMany(Project::className(), ['id' => 'id_project'])
-                        ->viaTable('{{%lnk_project_contractor}}', ['id_contractor' => 'id']);
+        return $this->hasMany(Project::className(), ['project_id' => 'project_id'])
+                        ->viaTable('{{%lnk_project_contractor}}', ['contractor_id' => 'contractor_id']);
     }
 
     /**
@@ -142,30 +152,39 @@ class Contractor extends \yii\db\ActiveRecord
      */
     public function getRelationships()
     {
-        return $this->hasMany(Relationship::className(), ['id_contractor' => 'id']);
+        return $this->hasMany(Relationship::className(), ['contractor_id' => 'contractor_id']);
     }
-    
-    public static function getList() {
-        $data = self::find()->orderBy('name')->all();
-        return ArrayHelper::map($data, 'id', 'name');
+
+    public static function getList()
+    {
+        $data = self::find()
+                ->orderBy('name')
+                ->all();
+        return ArrayHelper::map($data, 'contractor_id', 'name');
     }
-    
-    public function getLabelBreadcrumbs() {
+
+    public function getLabelBreadcrumbs()
+    {
         return $this->name;
+    }
+
+    public function getOpfName()
+    {
+        return $this->opf->short;
     }
 
     public function afterFind()
     {
         // загрузка списка проектов в поле Проекты
         parent::afterFind();
-        if ($this->id) {
+        if ($this->contractor_id) {
             $rows = ProjectContractor::find()
-                    ->select(['id_project'])
-                    ->where(['id_contractor' => $this->id])
+                    ->select(['project_id'])
+                    ->where(['contractor_id' => $this->contractor_id])
                     ->asArray()
                     ->all();
             foreach ($rows as $row) {
-                $this->projects[] = $row['id_project'];
+                $this->projects[] = $row['project_id'];
             }
         }
     }

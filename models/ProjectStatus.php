@@ -3,17 +3,28 @@
 namespace app\models;
 
 use Yii;
+use yii\behaviors\TimestampBehavior;
 
 /**
  * This is the model class for table "{{%project_status}}".
  *
- * @property integer $id
+ * @property integer $project_status_id
  * @property string $name
  *
  * @property Project[] $projects
  */
 class ProjectStatus extends \yii\db\ActiveRecord
 {
+
+    public function behaviors()
+    {
+        return [
+            'timestamp' => [
+                'class' => TimestampBehavior::className()
+            ]
+        ];
+    }
+
     /**
      * @inheritdoc
      */
@@ -39,7 +50,7 @@ class ProjectStatus extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
+            'project_status_id' => 'ID',
             'name' => 'Наименование',
         ];
     }
@@ -49,6 +60,7 @@ class ProjectStatus extends \yii\db\ActiveRecord
      */
     public function getProjects()
     {
-        return $this->hasMany(Project::className(), ['id_status' => 'id']);
+        return $this->hasMany(Project::className(), ['project_status_id' => 'project_status_id']);
     }
+
 }

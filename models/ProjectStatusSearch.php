@@ -18,7 +18,7 @@ class ProjectStatusSearch extends ProjectStatus
     public function rules()
     {
         return [
-            [['id'], 'integer'],
+            [['project_status_id'], 'integer'],
             [['name'], 'safe'],
         ];
     }
@@ -59,7 +59,7 @@ class ProjectStatusSearch extends ProjectStatus
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
+            'project_status_id' => $this->project_status_id,
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name]);

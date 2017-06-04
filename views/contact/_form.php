@@ -5,6 +5,7 @@ use yii\bootstrap\ActiveForm;
 use kartik\select2\Select2;
 use yii\widgets\MaskedInput;
 use app\models\Contractor;
+use app\models\AuthorityBasis;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Contact */
@@ -30,7 +31,7 @@ use app\models\Contractor;
     ?>
 
     <div class="row">
-        <div class="col-xs-6">
+        <div class="col-xs-7">
             <div class="panel panel-default">
                 <div class="panel-heading">
                     Основные данные
@@ -40,12 +41,22 @@ use app\models\Contractor;
 
                     <?= $form->field($model, 'firstname')->textInput(['maxlength' => true]) ?>
 
-                    <?= $form->field($model, 'patronimyc')->textInput(['maxlength' => true]) ?>
+                    <?= $form->field($model, 'patronymic')->textInput(['maxlength' => true]) ?>
 
                     <?= $form->field($model, 'post')->textInput(['maxlength' => true]) ?>
 
                     <?=
-                    $form->field($model, 'id_contractor')->widget(select2::classname(), [
+                    $form->field($model, 'authority_basis_id')->widget(select2::classname(), [
+                        'data' => AuthorityBasis::getList(),
+                        'theme' => Select2::THEME_BOOTSTRAP,
+                        'options' => [
+                            'placeholder' => 'Выберите основание полномочий ...',
+                        ],
+                    ])
+                    ?>
+
+                    <?=
+                    $form->field($model, 'contractor_id')->widget(select2::classname(), [
                         'data' => Contractor::getList(),
                         'language' => 'ru',
                         'theme' => Select2::THEME_BOOTSTRAP,
@@ -57,7 +68,7 @@ use app\models\Contractor;
                 </div>
             </div>
         </div>
-        <div class="col-xs-6">
+        <div class="col-xs-5">
             <div class="panel panel-default">
                 <div class="panel-heading">
                     Контакты
@@ -74,6 +85,9 @@ use app\models\Contractor;
                     <?=
                     $form->field($model, 'phone')->textInput(['maxlength' => true])->widget(MaskedInput::className(), [
                         'mask' => '+7 (999) 999-99-99',
+                        'clientOptions' => [
+                            'removeMaskOnSubmit' => true
+                        ]
                     ])
                     ?>
                 </div>
@@ -84,16 +98,16 @@ use app\models\Contractor;
                     Дополнительно
                 </div>
                 <div class="panel-body">
-                    <?= $form->field($model, 'description')->textarea() ?>
+<?= $form->field($model, 'description')->textarea() ?>
                 </div>
             </div>
         </div>
     </div>
-    
+
     <div class="text-right">
-        <?= Html::submitButton($model->isNewRecord ? 'Добавить' : 'Обновить', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+    <?= Html::submitButton($model->isNewRecord ? 'Добавить' : 'Обновить', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
     </div>
 
-    <?php ActiveForm::end(); ?>
+<?php ActiveForm::end(); ?>
 
 </div>

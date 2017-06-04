@@ -22,7 +22,8 @@
         "kartik-v/yii2-widget-alert": "@dev",
         "kartik-v/yii2-widget-growl": "*",
         "kartik-v/yii2-widget-select2": "@dev",
-        "rmrevin/yii2-fontawesome": "2.10.*"
+        "kartik-v/yii2-widget-fileinput": "@dev",
+        "rmrevin/yii2-fontawesome": "*"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",

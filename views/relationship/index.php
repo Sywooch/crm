@@ -12,8 +12,6 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="relationship-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
-
     <p class="text-right">
         <?= Html::a('Добавить запись', ['create', 'relation' => $relation, 'relation_id' => $relation_id], ['class' => 'btn btn-success']) ?>
     </p>

@@ -6,87 +6,136 @@ use yii\helpers\Html;
 use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
 use yii\widgets\Breadcrumbs;
-use app\assets\AppAsset;
+use app\assets\SBAdminAsset;
+use kartik\alert\AlertBlock;
 
-AppAsset::register($this);
+SBAdminAsset::register($this);
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
 <html lang="<?= Yii::$app->language ?>">
     <head>
         <meta charset="<?= Yii::$app->charset ?>">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <?= Html::csrfMetaTags() ?>
         <title><?= Html::encode($this->title) ?></title>
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
         <?php $this->head() ?>
     </head>
     <body>
         <?php $this->beginBody() ?>
 
-        <div class="wrap">
+        <div id="wrapper" class="fill">
             <?php
             NavBar::begin([
-                'brandLabel' => 'ITIS CRM',
                 'brandUrl' => Yii::$app->homeUrl,
                 'options' => [
-                    'class' => 'navbar-inverse navbar-fixed-top',
+                    'class' => 'navbar navbar-default',
+                ],
+                'containerOptions' => [
+                    'id' => 'navbar-ex1-collapse'
+                ],
+                'innerContainerOptions' => [
+                    'class' => 'container-fluid'
                 ],
             ]);
-            echo Nav::widget([
-                'options' => ['class' => 'navbar-nav'],
+            ?>
+            <?=
+            Nav::widget([
+                'options' => ['class' => 'nav navbar-nav side-nav'],
+                'encodeLabels' => false,
                 'items' => [
-                    ['label' => 'Проекты', 'url' => ['/project/']],
-                    ['label' => 'Контрагенты', 'url' => ['/contractor/']],
-                    ['label' => 'Контакты', 'url' => ['/contact/']],
-                    ['label' => 'Документы', 'url' => ['/document/']],
-                    ['label' => 'Учетные записи', 'url' => ['/user/']],
+                    [
+                        'label' => '<i class="fa fa-dashboard"></i> Панель приборов',
+                        'url' => ['/'],
+                        'active' => Yii::$app->controller->id == 'site',
+                    ],
+                    [
+                        'label' => '<i class="fa fa-product-hunt"></i> Проекты',
+                        'url' => ['/project/'],
+                        'active' => Yii::$app->controller->id == 'project',
+                        'visible' => Yii::$app->user->can('manager'),
+                    ],
+                    [
+                        'label' => '<i class="fa fa-vcard"></i> Контрагенты',
+                        'url' => ['/contractor/'],
+                        'active' => Yii::$app->controller->id == 'contractor',
+                        'visible' => Yii::$app->user->can('manager'),
+                    ],
+                    [
+                        'label' => '<i class="fa fa-address-book"></i> Контакты',
+                        'url' => ['/contact/'],
+                        'active' => Yii::$app->controller->id == 'contact',
+                        'visible' => Yii::$app->user->can('manager'),
+                    
+                    ],
+                    [
+                        'label' => '<i class="fa fa-folder-open"></i> Документы',
+                        'url' => ['/document/'],
+                        'active' => Yii::$app->controller->id == 'document',
+                        'visible' => Yii::$app->user->can('manager'),
+                    
+                    ],
                 ],
             ]);
-            echo Nav::widget([
-                'options' => ['class' => 'navbar-nav navbar-right'],
+            ?>
+            <?=
+            Nav::widget([
+                'options' => [
+                    'class' => 'navbar-nav navbar-right'
+                ],
+                'encodeLabels' => false,
                 'items' => [
-                    ['label' => 'Настройки',
+                    ['label' => '<i class="fa fa-user-circle"></i> ' . Yii::$app->user->identity->getFullname(true),
                         'items' => [
+                            ['label' => 'Профиль', 'url' => '/profile'],
+                            ['label' => 'Сменить пароль', 'url' => '/profile/change-password'],
+                            '<li class="divider"></li>',
+                            !Yii::$app->user->isGuest ? ['label' => 'Выйти', 'url' => ['/site/logout']] : ''
+                        ]
+                    ],
+                    [
+                        'label' => '<i class="fa fa-cog"></i>',
+                        'visible' => Yii::$app->user->can('administrator'),
+                        'items' => [
+                            ['label' => 'Администрирование'],
                             ['label' => 'Статусы проектов', 'url' => ['/project-status/']],
                             ['label' => 'Типы документов', 'url' => ['/document-type/']],
                             ['label' => 'Папки', 'url' => ['/folder/']],
                             ['label' => 'ОПФ', 'url' => ['/opf/']],
+                            ['label' => 'Основания полномочий', 'url' => ['/authority-basis/']],
+                            ['label' => 'Учетные записи'],
+                            ['label' => 'Пользователи', 'url' => ['/user/']],
                         ]
                     ],
-                    !Yii::$app->user->isGuest ? (
-                            '<li>'
-                            . Html::beginForm(['/site/logout'], 'post')
-                            . Html::submitButton(
-                                    'Выход', ['class' => 'btn btn-link logout']
-                            )
-                            . Html::endForm()
-                            . '</li>'
-                            ) : ''
                 ],
             ]);
-            NavBar::end();
             ?>
+            <?php NavBar::end(); ?>
 
-            <div class="container">
-                <?=
-                Breadcrumbs::widget([
-                    'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
-                ])
-                ?>
-                <div class="page-header">
-                    <h1><?= Html::encode($this->title) ?></h1>
+            <div id="page-wrapper">
+                <div class="container-fluid">
+                    <?=
+                    Breadcrumbs::widget([
+                        'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
+                    ])
+                    ?>
+                    <header>
+                        <h1><?= Html::encode($this->title) ?></h1>
+                    </header>
+
+                    <?= AlertBlock::widget() ?>
+
+                    <?= $content ?>
                 </div>
-                <?= $content ?>
             </div>
         </div>
 
-        <footer class="footer">
-            <div class="container">
-                <p class="pull-left">&copy; Anton Kazarinov <?= date('Y') ?></p>
 
-                <p class="pull-right"><?= Yii::powered() ?></p>
-            </div>
-        </footer>
 
         <?php $this->endBody() ?>
     </body>

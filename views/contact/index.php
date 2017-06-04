@@ -16,23 +16,31 @@ $this->params['breadcrumbs'][] = $this->title;
     <p class="text-right">
         <?= Html::a('Добавить контакт', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
-    <?=
-    GridView::widget(array_merge(Yii::$app->params['GridView'], [
-        'dataProvider' => $dataProvider,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-            'id_contractor',
-            'lastname',
-            'firstname',
-            'patronimyc',
-            'email:email',
-            'phone',
-            ['class' => 'yii\grid\ActionColumn',
-                'headerOptions' => [
-                    'width' => 75,
+    <div class="panel">
+        <div class="panel-body">
+
+            <?=
+            GridView::widget(array_merge(Yii::$app->params['GridView'], [
+                'dataProvider' => $dataProvider,
+                'columns' => [
+                    ['class' => 'yii\grid\SerialColumn'],
+                    [
+                        'attribute' => 'contractor_id',
+                        'value' => 'ContractorName'
+                    ],
+                    'lastname',
+                    'firstname',
+                    'patronymic',
+                    'email:email',
+                    'phone',
+                    ['class' => 'yii\grid\ActionColumn',
+                        'headerOptions' => [
+                            'width' => 75,
+                        ],
+                    ],
                 ],
-            ],
-        ],
-    ]));
-    ?>
+            ]));
+            ?>
+        </div>
+    </div>
 </div>

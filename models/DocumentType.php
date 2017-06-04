@@ -3,17 +3,30 @@
 namespace app\models;
 
 use Yii;
+use yii\db\ActiveRecord;
+use yii\helpers\ArrayHelper;
+use yii\behaviors\TimestampBehavior;
 
 /**
  * This is the model class for table "{{%document_type}}".
  *
- * @property integer $id
+ * @property integer $document_type_id
  * @property string $name
  *
  * @property Document[] $documents
  */
-class DocumentType extends \yii\db\ActiveRecord
+class DocumentType extends ActiveRecord
 {
+
+    public function behaviors()
+    {
+        return [
+            'timestamp' => [
+                'class' => TimestampBehavior::className()
+            ]
+        ];
+    }
+
     /**
      * @inheritdoc
      */
@@ -39,7 +52,7 @@ class DocumentType extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
+            'document_type_id' => 'ID',
             'name' => 'Наименование',
         ];
     }
@@ -49,6 +62,15 @@ class DocumentType extends \yii\db\ActiveRecord
      */
     public function getDocuments()
     {
-        return $this->hasMany(Document::className(), ['id_type' => 'id']);
+        return $this->hasMany(Document::className(), ['id_type' => 'document_type_id']);
     }
+
+    public static function getList()
+    {
+        $data = self::find()
+                ->orderBy('name')
+                ->all();
+        return ArrayHelper::map($data, 'document_type_id', 'name');
+    }
+
 }

@@ -16,18 +16,22 @@ $this->params['breadcrumbs'][] = $this->title;
     <p class="text-right">
         <?= Html::a('Добавить статус', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
-    <?=
-    GridView::widget(array_merge(Yii::$app->params['GridView'], [
-        'dataProvider' => $dataProvider,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-            'name',
-            ['class' => 'yii\grid\ActionColumn',
-                'headerOptions' => [
-                    'width' => 75,
+    <div class="panel">
+        <div class="panel-body">
+            <?=
+            GridView::widget(array_merge(Yii::$app->params['GridView'], [
+                'dataProvider' => $dataProvider,
+                'columns' => [
+                    'name',
+                    ['class' => 'yii\grid\ActionColumn',
+                        'template' => '{update} {delete}',
+                        'headerOptions' => [
+                            'width' => 45,
+                        ],
+                    ],
                 ],
-            ],
-        ],
-    ]));
-    ?>
+            ]));
+            ?>
+        </div>
+    </div>
 </div>

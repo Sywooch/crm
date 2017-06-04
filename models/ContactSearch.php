@@ -18,7 +18,7 @@ class ContactSearch extends Contact
     public function rules()
     {
         return [
-            [['id', 'id_contractor'], 'integer'],
+            [['contact_id', 'contractor_id'], 'integer'],
             [['lastname', 'firstname', 'patronimyc', 'post', 'email', 'phone', 'description'], 'safe'],
         ];
     }
@@ -59,13 +59,13 @@ class ContactSearch extends Contact
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
-            'id_contractor' => $this->id_contractor,
+            'contact_id' => $this->contact_id,
+            'contractor_id' => $this->contractor_id,
         ]);
 
         $query->andFilterWhere(['like', 'lastname', $this->lastname])
             ->andFilterWhere(['like', 'firstname', $this->firstname])
-            ->andFilterWhere(['like', 'patronimyc', $this->patronimyc])
+            ->andFilterWhere(['like', 'patronimyc', $this->patronymic])
             ->andFilterWhere(['like', 'post', $this->post])
             ->andFilterWhere(['like', 'email', $this->email])
             ->andFilterWhere(['like', 'phone', $this->phone])

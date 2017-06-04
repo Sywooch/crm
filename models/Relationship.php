@@ -3,24 +3,34 @@
 namespace app\models;
 
 use Yii;
+use yii\behaviors\TimestampBehavior;
 
 /**
  * This is the model class for table "{{%relationship}}".
  *
- * @property integer $id
- * @property integer $id_contractor
- * @property integer $id_contact
- * @property integer $id_autor
+ * @property integer $relationship_id
+ * @property integer $contractor_id
+ * @property integer $contact_id
+ * @property integer $user_id
  * @property string $title
  * @property string $description
- * @property integer $datetime
+ * @property integer $created_at
  *
- * @property Contractor $idContractor
- * @property Contact $idContact
- * @property User $idAutor
+ * @property Contractor $contractor
+ * @property Contact $contact
+ * @property User $user
  */
 class Relationship extends \yii\db\ActiveRecord
 {
+
+    public function behaviors()
+    {
+        return [
+            'timestamp' => [
+                'class' => TimestampBehavior::className()
+            ]
+        ];
+    }
 
     /**
      * @inheritdoc
@@ -36,12 +46,12 @@ class Relationship extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id_contractor', 'id_contact', 'id_autor', 'datetime'], 'integer'],
+            [['contractor_id', 'contact_id', 'user_id', 'created_at'], 'integer'],
             [['title', 'description'], 'required'],
             [['title'], 'string', 'max' => 255],
-            [['id_contractor'], 'exist', 'skipOnError' => true, 'targetClass' => Contractor::className(), 'targetAttribute' => ['id_contractor' => 'id']],
-            [['id_contact'], 'exist', 'skipOnError' => true, 'targetClass' => Contact::className(), 'targetAttribute' => ['id_contact' => 'id']],
-            [['id_autor'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['id_autor' => 'id']],
+            [['contractor_id'], 'exist', 'skipOnError' => true, 'targetClass' => Contractor::className(), 'targetAttribute' => ['contractor_id' => 'contractor_id']],
+            [['contact_id'], 'exist', 'skipOnError' => true, 'targetClass' => Contact::className(), 'targetAttribute' => ['contact_id' => 'contact_id']],
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'user_id']],
         ];
     }
 
@@ -51,10 +61,10 @@ class Relationship extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'id_contractor' => 'Контрагент',
-            'id_contact' => 'Контакт',
-            'id_autor' => 'Автор',
+            'relationship_id' => 'ID',
+            'contractor_id' => 'Контрагент',
+            'contact_id' => 'Контакт',
+            'user_id' => 'Автор',
             'title' => 'Заголовок',
             'description' => 'Описание',
             'datetime' => 'Дата и время',
@@ -66,7 +76,7 @@ class Relationship extends \yii\db\ActiveRecord
      */
     public function getIdContractor()
     {
-        return $this->hasOne(Contractor::className(), ['id' => 'id_contractor']);
+        return $this->hasOne(Contractor::className(), ['contractor_id' => 'contractor_id']);
     }
 
     /**
@@ -74,7 +84,7 @@ class Relationship extends \yii\db\ActiveRecord
      */
     public function getIdContact()
     {
-        return $this->hasOne(Contact::className(), ['id' => 'id_contact']);
+        return $this->hasOne(Contact::className(), ['contact_id' => 'contact_id']);
     }
 
     /**
@@ -82,7 +92,7 @@ class Relationship extends \yii\db\ActiveRecord
      */
     public function getIdAutor()
     {
-        return $this->hasOne(User::className(), ['id' => 'id_autor']);
+        return $this->hasOne(User::className(), ['user_id' => 'user_id']);
     }
 
     public function beforeSave($insert)
@@ -91,17 +101,16 @@ class Relationship extends \yii\db\ActiveRecord
 
         $relation = Yii::$app->request->get('relation');
         $relation_id = Yii::$app->request->get('relation_id');
-        $field = 'id_' . $relation;
+        $field = $relation . '_id';
         $this->$field = $relation_id;
-        $this->id_autor = Yii::$app->user->getId();
-        $this->datetime = time();
+        $this->user_id = Yii::$app->user->getId();
         return true;
     }
-    
+
     public function afterFind()
     {
         parent::afterFind();
-        $this->datetime = Yii::$app->formatter->asDatetime($this->datetime);
+        $this->created_at = Yii::$app->formatter->asDatetime($this->created_at);
     }
 
 }

@@ -18,7 +18,7 @@ class FolderSearch extends Folder
     public function rules()
     {
         return [
-            [['id'], 'integer'],
+            [['folder_id'], 'integer'],
             [['name'], 'safe'],
         ];
     }
@@ -59,7 +59,7 @@ class FolderSearch extends Folder
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
+            'folder_id' => $this->folder_id,
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name]);

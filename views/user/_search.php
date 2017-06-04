@@ -21,7 +21,7 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'firstname') ?>
 
-    <?= $form->field($model, 'patronimyc') ?>
+    <?= $form->field($model, 'patronymic') ?>
 
     <?= $form->field($model, 'post') ?>
 

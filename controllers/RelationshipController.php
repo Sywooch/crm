@@ -8,6 +8,7 @@ use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
 
 /**
  * RelationshipController implements the CRUD actions for Relationship model.
@@ -27,6 +28,15 @@ class RelationshipController extends Controller
                     'delete' => ['POST'],
                 ],
             ],
+            'access' => [
+                'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['manager'],
+                    ],
+                ],
+            ],
         ];
     }
     
@@ -39,7 +49,7 @@ class RelationshipController extends Controller
         $this->setBreadcrumbs($relation, $relation_id);
 
         $dataProvider = new ActiveDataProvider([
-            'query' => Relationship::find()->where(['id_' . $relation => $relation_id]),
+            'query' => Relationship::find()->where([$relation . '_id' => $relation_id]),
             'pagination' => [
                 'pageSize' => 20,
             ],
@@ -64,7 +74,7 @@ class RelationshipController extends Controller
         $model = new Relationship();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['index', 'id' => $model->id, 'relation' => $relation, 'relation_id' => $relation_id]);
+            return $this->redirect(['index', 'relation' => $relation, 'relation_id' => $relation_id]);
         } else {
             return $this->render('create', [
                         'model' => $model,
