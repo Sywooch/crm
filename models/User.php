@@ -203,23 +203,19 @@ class User extends ActiveRecord implements IdentityInterface
             $this->addError($attribute, 'Старый пароль указан не верно');
         }
     }
-
-    public function beforeSave($insert)
+    
+    public function afterSave($insert, $changedAttributes)
     {
-        parent::beforeSave($insert);
-
+        parent::afterSave($insert, $changedAttributes);
+        
         $authManager = Yii::$app->authManager;
-        $authManager->revokeAll($this->id);
-        $result = false;
+        $authManager->revokeAll($this->user_id);
         foreach ($this->role as $role) {
             $r = $authManager->getRole($role);
             if ($r) {
                 $authManager->assign($r, $this->user_id);
-                $result = true;
             }
         }
-
-        return $result;
     }
 
     public function afterFind()
