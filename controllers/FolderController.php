@@ -15,6 +15,7 @@ use yii\filters\AccessControl;
  */
 class FolderController extends Controller
 {
+
     /**
      * @inheritdoc
      */
@@ -49,8 +50,8 @@ class FolderController extends Controller
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
+                    'searchModel' => $searchModel,
+                    'dataProvider' => $dataProvider,
         ]);
     }
 
@@ -64,10 +65,11 @@ class FolderController extends Controller
         $model = new Folder();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['update', 'id' => $model->folder_id]);
+            Yii::$app->session->setFlash('success', 'Запись успешно добавлена');
+            return $this->redirect(['index']);
         } else {
             return $this->render('create', [
-                'model' => $model,
+                        'model' => $model,
             ]);
         }
     }
@@ -82,11 +84,12 @@ class FolderController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['update', 'id' => $model->folder_id]);
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {                
+            Yii::$app->session->setFlash('success', 'Запись успешно изменена');
+            return $this->redirect(['index']);
         } else {
             return $this->render('update', [
-                'model' => $model,
+                        'model' => $model,
             ]);
         }
     }
@@ -100,7 +103,7 @@ class FolderController extends Controller
     public function actionDelete($id)
     {
         $this->findModel($id)->delete();
-
+        Yii::$app->session->setFlash('success', 'Запись успешно удалена');
         return $this->redirect(['index']);
     }
 
@@ -119,4 +122,5 @@ class FolderController extends Controller
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
+
 }

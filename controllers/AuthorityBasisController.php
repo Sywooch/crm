@@ -50,6 +50,7 @@ class AuthorityBasisController extends Controller
         $model = new AuthorityBasis();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            Yii::$app->session->setFlash('success', 'Запись успешно добавлена');
             return $this->redirect(['index']);
         } else {
             return $this->render('create', [
@@ -63,6 +64,7 @@ class AuthorityBasisController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            Yii::$app->session->setFlash('success', 'Запись успешно изменена');
             return $this->redirect(['index']);
         } else {
             return $this->render('update', [
@@ -74,7 +76,7 @@ class AuthorityBasisController extends Controller
     public function actionDelete($id)
     {
         $this->findModel($id)->delete();
-
+        Yii::$app->session->setFlash('success', 'Запись успешно удалена');
         return $this->redirect(['index']);
     }
 

@@ -15,6 +15,7 @@ use yii\filters\AccessControl;
  */
 class ProjectStatusController extends Controller
 {
+
     /**
      * @inheritdoc
      */
@@ -49,8 +50,8 @@ class ProjectStatusController extends Controller
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
+                    'searchModel' => $searchModel,
+                    'dataProvider' => $dataProvider,
         ]);
     }
 
@@ -64,10 +65,11 @@ class ProjectStatusController extends Controller
         $model = new ProjectStatus();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['update', 'id' => $model->project_status_id]);
+            Yii::$app->session->setFlash('success', 'Новая запись успешно добавлена');
+            return $this->redirect(['index']);
         } else {
             return $this->render('create', [
-                'model' => $model,
+                        'model' => $model,
             ]);
         }
     }
@@ -83,10 +85,11 @@ class ProjectStatusController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['update', 'id' => $model->project_status_id]);
+            Yii::$app->session->setFlash('success', 'Запись успешно изменена');
+            return $this->redirect(['index']);
         } else {
             return $this->render('update', [
-                'model' => $model,
+                        'model' => $model,
             ]);
         }
     }
@@ -100,7 +103,7 @@ class ProjectStatusController extends Controller
     public function actionDelete($id)
     {
         $this->findModel($id)->delete();
-
+        Yii::$app->session->setFlash('success', 'Запись успешно удалена');
         return $this->redirect(['index']);
     }
 
@@ -119,4 +122,5 @@ class ProjectStatusController extends Controller
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
+
 }

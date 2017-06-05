@@ -64,7 +64,8 @@ class DocumentTypeController extends Controller
         $model = new DocumentType();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['update', 'id' => $model->document_type_id]);
+            Yii::$app->session->setFlash('success', 'Запись успешно добавлена');
+            return $this->redirect(['index']);
         } else {
             return $this->render('create', [
                 'model' => $model,
@@ -82,8 +83,9 @@ class DocumentTypeController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['update', 'id' => $model->document_type_id]);
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {            
+            Yii::$app->session->setFlash('success', 'Запись успешно изменена');
+            return $this->redirect(['index']);
         } else {
             return $this->render('update', [
                 'model' => $model,
@@ -100,7 +102,7 @@ class DocumentTypeController extends Controller
     public function actionDelete($id)
     {
         $this->findModel($id)->delete();
-
+        Yii::$app->session->setFlash('success', 'Запись успешно удалена');
         return $this->redirect(['index']);
     }
 
