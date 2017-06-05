@@ -66,11 +66,14 @@ class LoginForm extends Model
             return false;
         }
 
-        return Yii::$app->mailer->compose()
+        return Yii::$app->mailer->compose('request_token', [
+                            'firstname' => $user->firstname,
+                            'patronimyc' => $user->patronymic,
+                            'token' => $user->password_reset_token
+                        ])
                         ->setFrom([Yii::$app->params['supportEmail'] => Yii::$app->name . ' robot'])
                         ->setTo($this->email)
-                        ->setSubject('Password reset for ' . Yii::$app->name)
-                        ->setTextBody($user->password_reset_token)
+                        ->setSubject('Восстановление пароля ' . Yii::$app->name)
                         ->send();
     }
 

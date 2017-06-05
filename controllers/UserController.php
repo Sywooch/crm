@@ -68,12 +68,15 @@ class UserController extends Controller
             $user->generatePasswordResetToken();
             $user->generateAuthKey();
             $user->save();
-            $content = \yii\bootstrap\Html::a('Сбросить пароль', ['site/reset-password', 'token' => $user->password_reset_token]);
-            Yii::$app->mailer->compose()
-                    ->setFrom('noreply@itisinfo.ru')
+            
+            Yii::$app->mailer->compose('new_user', [
+                        'firstname' => $user->firstname,
+                        'patronimyc' => $user->patronymic,
+                        'token' => $user->password_reset_token
+                    ])
+                    ->setFrom([Yii::$app->params['supportEmail'] => Yii::$app->name . ' robot'])
                     ->setTo($user->email)
                     ->setSubject('Учетная запись')
-                    ->setTextBody($content)
                     ->send();
             Yii::$app->session->setFlash('success', 'Пользователь успешно добавлен');
             return $this->redirect(['update', 'id' => $user->user_id]);
