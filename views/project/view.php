@@ -43,7 +43,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                         <div class="form-group">
                             <?= Html::activeLabel($model, 'site_test', Yii::$app->params['html']['control-label']); ?>
-                            <?= Html::tag('p', Html::a($model->site, $model->site_test, ['target' => '_blank']), Yii::$app->params['html']['form-control-static']) ?>
+                            <?= Html::tag('p', Html::a($model->site_test, $model->site_test, ['target' => '_blank']), Yii::$app->params['html']['form-control-static']) ?>
                         </div>
                     </div>
                 </div>

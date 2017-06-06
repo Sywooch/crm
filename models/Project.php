@@ -23,7 +23,7 @@ use yii\behaviors\TimestampBehavior;
  */
 class Project extends \yii\db\ActiveRecord
 {
-    
+
     public function behaviors()
     {
         return [
@@ -33,31 +33,23 @@ class Project extends \yii\db\ActiveRecord
         ];
     }
 
-    /**
-     * @inheritdoc
-     */
     public static function tableName()
     {
         return '{{%project}}';
     }
 
-    /**
-     * @inheritdoc
-     */
     public function rules()
     {
         return [
-            [['name', 'site', 'user_id', 'project_status_id'], 'required'],
+            [['name', 'user_id', 'project_status_id'], 'required'],
             [['user_id', 'project_status_id'], 'integer'],
             [['name', 'description', 'site', 'site_test'], 'string', 'max' => 255],
             [['site', 'site_test'], 'url', 'defaultScheme' => 'http'],
-            [['project_status_id'], 'exist', 'skipOnError' => true, 'targetClass' => ProjectStatus::className(), 'targetAttribute' => ['project_status_id' => 'project_status_id']],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'user_id']],];
+            ['project_status_id', 'exist', 'targetClass' => ProjectStatus::className()],
+            ['user_id', 'exist', 'targetClass' => User::className()]
+        ];
     }
 
-    /**
-     * @inheritdoc
-     */
     public function attributeLabels()
     {
         return [
@@ -71,25 +63,16 @@ class Project extends \yii\db\ActiveRecord
         ];
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getStatus()
     {
         return $this->hasOne(ProjectStatus::className(), ['project_status_id' => 'project_status_id']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getUser()
     {
         return $this->hasOne(User::className(), ['user_id' => 'user_id']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getContractors()
     {
         return $this->hasMany(Contractor::className(), ['contractor_id' => 'contractor_id'])
@@ -106,8 +89,8 @@ class Project extends \yii\db\ActiveRecord
         $projects = self::find()->orderBy('name')->all();
         return ArrayHelper::map($projects, 'project_id', 'name');
     }
-    
-    public function getLabelBreadcrumbs() 
+
+    public function getLabelBreadcrumbs()
     {
         return $this->name;
     }
