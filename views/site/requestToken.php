@@ -24,7 +24,7 @@ $this->title = 'Cброс пароля';
         </div>
     </div>
 
-    <p class="text-center"><?= Html::a('Назад', ['site/login']); ?></p>
+    <p class="text-center"><?= Html::a('Вернуться к форме входа', ['site/login']); ?></p>
 
     <?php ActiveForm::end(); ?>
 
