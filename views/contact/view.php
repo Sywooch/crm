@@ -52,7 +52,8 @@ $this->params['breadcrumbs'][] = $this->title;
                         </div>
                         <div class="form-group">    
                             <?= Html::activeLabel($model, 'authority_basis_id', Yii::$app->params['html']['control-label']); ?>
-                            <?= Html::tag('p', $model->authorityBasis->name, Yii::$app->params['html']['form-control-static']) ?>
+                            <?= Html::tag('p', ($model->authorityBasis !== null ? $model->authorityBasis->name : ''), Yii::$app->params['html']['form-control-static']) ?>
+
                         </div>
                         <div class="form-group">    
                             <?= Html::activeLabel($model, 'contractor_id', Yii::$app->params['html']['control-label']); ?>

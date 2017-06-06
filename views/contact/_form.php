@@ -52,6 +52,9 @@ use app\models\AuthorityBasis;
                         'options' => [
                             'placeholder' => 'Выберите основание полномочий ...',
                         ],
+                        'pluginOptions' => [
+                            'allowClear' => true
+                        ]
                     ])
                     ?>
 

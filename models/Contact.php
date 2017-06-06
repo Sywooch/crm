@@ -21,6 +21,7 @@ use yii\behaviors\TimestampBehavior;
  *
  * @property Contractor $contractor
  * @property Relationship[] $relationships
+ * @property AuthorityBasis $authorityBasis
  */
 class Contact extends \yii\db\ActiveRecord
 {
@@ -34,17 +35,11 @@ class Contact extends \yii\db\ActiveRecord
         ];
     }
 
-    /**
-     * @inheritdoc
-     */
     public static function tableName()
     {
         return '{{%contact}}';
     }
-
-    /**
-     * @inheritdoc
-     */
+    
     public function rules()
     {
         return [
@@ -57,9 +52,6 @@ class Contact extends \yii\db\ActiveRecord
         ];
     }
 
-    /**
-     * @inheritdoc
-     */
     public function attributeLabels()
     {
         return [
@@ -76,9 +68,6 @@ class Contact extends \yii\db\ActiveRecord
         ];
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getContractor()
     {
         return $this->hasOne(Contractor::className(), ['contractor_id' => 'contractor_id']);
@@ -88,9 +77,6 @@ class Contact extends \yii\db\ActiveRecord
         return $this->hasOne(AuthorityBasis::className(), ['authority_basis_id' => 'authority_basis_id']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getRelationships()
     {
         return $this->hasMany(Relationship::className(), ['contact_id' => 'contact_id']);
