@@ -50,7 +50,7 @@ SBAdminAsset::register($this);
                 'encodeLabels' => false,
                 'items' => [
                     [
-                        'label' => '<i class="fa fa-dashboard"></i> Панель приборов',
+                        'label' => '<i class="fa fa-dashboard"></i> Панель инструментов',
                         'url' => ['/'],
                         'active' => Yii::$app->controller->id == 'site',
                     ],
