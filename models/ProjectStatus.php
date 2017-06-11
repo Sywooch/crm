@@ -4,6 +4,8 @@ namespace app\models;
 
 use Yii;
 use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "{{%project_status}}".
@@ -13,7 +15,7 @@ use yii\behaviors\TimestampBehavior;
  *
  * @property Project[] $projects
  */
-class ProjectStatus extends \yii\db\ActiveRecord
+class ProjectStatus extends ActiveRecord
 {
 
     public function behaviors()
@@ -61,6 +63,11 @@ class ProjectStatus extends \yii\db\ActiveRecord
     public function getProjects()
     {
         return $this->hasMany(Project::className(), ['project_status_id' => 'project_status_id']);
+    }
+    
+    public static function getList() {
+        $data = self::find()->orderBy('name')->all();
+        return ArrayHelper::map($data, 'project_status_id', 'name');
     }
 
 }

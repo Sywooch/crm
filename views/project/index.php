@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
+use app\models\ProjectStatus;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\ProjectSearch */
@@ -18,16 +19,31 @@ $this->params['breadcrumbs'][] = $this->title;
     </p>   
     <div class="panel">
         <div class="panel-body">
+            <?php Pjax::begin() ?>
             <?=
             GridView::widget(array_merge(Yii::$app->params['GridView'], [
                 'dataProvider' => $dataProvider,
+                'filterModel' => $searchModel,
                 'columns' => [
-                    ['class' => 'yii\grid\SerialColumn'],
-                    'name',
-                    'description',
+                    [
+                        'attribute' => 'name',
+                        'filterInputOptions' => [
+                            'class' => 'form-control input-sm',
+                        ]
+                    ],
+                    [
+                        'attribute' => 'description',
+                        'filterInputOptions' => [
+                            'class' => 'form-control input-sm',
+                        ]
+                    ],
                     [
                         'attribute' => 'project_status_id',
-                        'value' => 'StatusName'
+                        'value' => 'StatusName',
+                        'filter' => ProjectStatus::getList(),
+                        'filterInputOptions' => [
+                            'class' => 'form-control input-sm',
+                        ]
                     ],
                     ['class' => 'yii\grid\ActionColumn',
                         'headerOptions' => [
@@ -37,6 +53,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 ],
             ]));
             ?>
+            <?php Pjax::end() ?>
         </div>
     </div>
 
