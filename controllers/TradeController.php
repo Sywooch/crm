@@ -15,6 +15,7 @@ use yii\filters\AccessControl;
  */
 class TradeController extends Controller
 {
+
     /**
      * @inheritdoc
      */
@@ -49,8 +50,8 @@ class TradeController extends Controller
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
+                    'searchModel' => $searchModel,
+                    'dataProvider' => $dataProvider,
         ]);
     }
 
@@ -62,7 +63,7 @@ class TradeController extends Controller
     public function actionView($id)
     {
         return $this->render('view', [
-            'model' => $this->findModel($id),
+                    'model' => $this->findModel($id),
         ]);
     }
 
@@ -79,7 +80,7 @@ class TradeController extends Controller
             return $this->redirect(['view', 'id' => $model->trade_id]);
         } else {
             return $this->render('create', [
-                'model' => $model,
+                        'model' => $model,
             ]);
         }
     }
@@ -98,7 +99,7 @@ class TradeController extends Controller
             return $this->redirect(['view', 'id' => $model->trade_id]);
         } else {
             return $this->render('update', [
-                'model' => $model,
+                        'model' => $model,
             ]);
         }
     }
@@ -116,6 +117,48 @@ class TradeController extends Controller
         return $this->redirect(['index']);
     }
 
+    public function actionDoc($id)
+    {
+        $model = $this->findModel($id);
+        $price = explode('.', $model->price);
+        if (count($price) == 1) {
+            $price[1] = '00';
+        }
+        $model->price = $price;
+
+        $div = $this->renderPartial('doc', ['model' => $model]);
+        header("Pragma: no-cache");
+        header("Expires: 0");
+        header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+        header("Cache-Control: private", false);
+        header("Content-type: application/vnd.ms-word");
+        header("Content-Disposition: attachment; filename='Акт ({$model->name}).doc'");
+        header("Content-Transfer-Encoding: binary");
+        echo $div;
+        Yii::$app->end();
+    }
+
+    public function actionPayment($id)
+    {
+        $model = $this->findModel($id);
+        $price = explode('.', $model->price);
+        if (count($price) == 1) {
+            $price[1] = '00';
+        }
+        $model->price = $price;
+
+        $div = $this->renderPartial('payment', ['model' => $model]);
+        header("Pragma: no-cache");
+        header("Expires: 0");
+        header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+        header("Cache-Control: private", false);
+        header("Content-type: application/vnd.ms-word");
+        header("Content-Disposition: attachment; filename='Счет ({$model->name}).doc'");
+        header("Content-Transfer-Encoding: binary");
+        echo $div;
+        Yii::$app->end();
+    }
+
     /**
      * Finds the Trade model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
@@ -131,4 +174,5 @@ class TradeController extends Controller
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
+
 }

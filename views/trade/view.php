@@ -11,6 +11,17 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="project-view">
 
+    <p class="menu">
+        <?=
+        html::a('Сформировать акт <i class="fa fa-file-word-o" aria-hidden="true"></i> ', ['doc', 'id' => $model->trade_id], [
+            'class' => 'btn btn-default btn-sm'
+        ]) ?>
+        <?=
+        html::a('Сформировать счет <i class="fa fa-money" aria-hidden="true"></i> ', ['payment', 'id' => $model->trade_id], [
+            'class' => 'btn btn-default btn-sm'
+        ])
+        ?>
+    </p>
     <div class="row">
         <div class="col-xs-7">
             <div class="panel panel-default">
