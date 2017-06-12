@@ -74,6 +74,13 @@ SBAdminAsset::register($this);
                     
                     ],
                     [
+                        'label' => '<i class="fa fa-handshake-o"></i> Сделки',
+                        'url' => ['/trade/'],
+                        'active' => Yii::$app->controller->id == 'trade',
+                        'visible' => Yii::$app->user->can('manager'),
+                    
+                    ],
+                    [
                         'label' => '<i class="fa fa-folder-open"></i> Документы',
                         'url' => ['/document/'],
                         'active' => Yii::$app->controller->id == 'document',
@@ -104,6 +111,7 @@ SBAdminAsset::register($this);
                         'items' => [
                             ['label' => 'Администрирование'],
                             ['label' => 'Статусы проектов', 'url' => ['/project-status/']],
+                            ['label' => 'Статусы сделок', 'url' => ['/trade-status/']],
                             ['label' => 'Типы документов', 'url' => ['/document-type/']],
                             ['label' => 'Папки', 'url' => ['/folder/']],
                             ['label' => 'ОПФ', 'url' => ['/opf/']],

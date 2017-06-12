@@ -23,7 +23,9 @@
         "kartik-v/yii2-widget-growl": "*",
         "kartik-v/yii2-widget-select2": "@dev",
         "kartik-v/yii2-widget-fileinput": "@dev",
-        "rmrevin/yii2-fontawesome": "*"
+        "rmrevin/yii2-fontawesome": "*",
+        "kartik-v/yii2-money": "*",
+        "kartik-v/yii2-widget-datepicker": "@dev"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",

@@ -31,5 +31,15 @@ return [
         'form-control-static' => [
             'class' => 'form-control-static col-xs-8',
         ]
+    ],
+    'maskMoneyOptions' => [
+        'prefix' => '',
+        'suffix' => ' руб.',
+        'thousands' => ' ',
+        'decimal' => '.',
+        'allowNegative' => false,
+        'affixesStay' => true,
+        'formatOnBlur' => true,
+        'allowEmpty' => true,
     ]
 ];
